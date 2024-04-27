@@ -1,0 +1,31 @@
+.grid-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 20px;
+    padding: 20px;
+    justify-items: center; /* Center items horizontally */
+}
+
+.grid-item {
+    background-color: #f1f1f1;
+    padding: 20px;
+    text-align: center;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+}
+
+.grid-item:hover {
+    background-color: #ddd;
+}
+
+.grid-item a {
+    text-decoration: none;
+    color: #333;
+    font-weight: bold;
+}
+header {
+width: 100%;
+padding: 20px 0;
+color: #000;
+text-align: center;
+}
