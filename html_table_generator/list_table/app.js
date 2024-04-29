@@ -5,6 +5,9 @@ function generateHTML() {
     // Split the input text into lines
     const lines = inputText.split('\n');
 
+    // Remove trailing spaces and replace multiple spaces with a single space
+    const cleanedLines = lines.map(line => line.trim().replace(/\s+/g, ' '));
+
     // Initialize variables for tracking the current section and subsection
     let currentSection = '';
     let currentSubsection = '';
@@ -15,7 +18,7 @@ function generateHTML() {
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Global Pet Care Market Report</title>
+  <title>List Table</title>
   <style>
     table {
       border-collapse: collapse;
@@ -35,10 +38,11 @@ function generateHTML() {
 
 <table>\n`;
 
+
     // Iterate over each line of the input text
-    lines.forEach(line => {
+    cleanedLines.forEach(line => {
         // Check if the line is empty
-        if (line.trim() === '') {
+        if (line === '') {
             return;
         }
 
@@ -51,50 +55,72 @@ function generateHTML() {
             if (currentSection !== sectionNumber) {
                 // If this is not the first section, close the previous section
                 if (currentSection !== '') {
-                    html += `  </tr>\n`;
+                    html += `</tr>\n`;
                 }
 
                 // Update the current section
                 currentSection = sectionNumber;
 
                 // Start a new section
-                html += `  <tr>\n    <th>${sectionNumber}. ${sectionTitle}</th>\n  </tr>\n`;
+                if (sectionNumber.split('.').length === 1) {
+                    html += `<tr>\n<th>${sectionNumber}. ${sectionTitle}</th>\n  </tr>\n`;
+                }
+                // else if (sectionNumber.split('.').length > 1) {
+                //     html += `<tr>\n<td>${sectionNumber}. ${sectionTitle}</td>\n  </tr>\n`;
+                // }
+                else {
+                    tab = ''
+                    for(let i = 1; i < sectionNumber.split('.').length; i++) {
+                        tab += '&emsp;'
+                    }
+                    html += `<tr>\n<td>${tab} ${sectionNumber}. ${sectionTitle}</td>\n  </tr>\n`;
+                }
+
+                // Reset the current subsection
+                currentSubsection = '';
             }
         } else {
-            // Extract the subsection number and title
-            const [subsectionNumber, subsectionTitle] = line.split('. ');
+            // Extract the point number and title
+            const [pointNumber, pointTitle] = line.split('. ');
 
-            // Calculate the number of &emsp; to add
-            const emspCount = (subsectionNumber.match(/\./g) || []).length;
+            // Calculate the number of tabs to add
+            const tabCount = pointNumber.split('.').length - 1;
 
-            // Build the &emsp; string
-            let emsp = '';
-            for (let i = 0; i < emspCount; i++) {
-                emsp += '&emsp;';
+            // Build the tab string
+            let tabs = '';
+            for (let i = 0; i < tabCount; i++) {
+                tabs += '\t';
             }
 
             // Check if this is a new subsection
-            if (currentSubsection !== subsectionNumber) {
+            if (pointNumber.startsWith(currentSection) && !pointNumber.startsWith(currentSubsection)) {
                 // Close the previous subsection
                 if (currentSubsection !== '') {
-                    html += `    </td>\n  </tr>\n`;
+                    html += `</td>\n</tr>\n`;
                 }
 
                 // Update the current subsection
-                currentSubsection = subsectionNumber;
+                currentSubsection = pointNumber.split('.').slice(0, -1).join('.');
 
                 // Start a new subsection
-                html += `  <tr>\n    <td>${emsp}${subsectionNumber}. ${subsectionTitle}</td>\n  </tr>\n`;
+                html += `<tr>\n<td>${tabs}${pointNumber}. ${pointTitle}</td>\n`;
+            } else {
+                // This is not a subpoint, add it to the previous section
+                if (currentSubsection === '') {
+                    html += `<tr>\n<td>${tabs}${pointNumber}. ${pointTitle}</td>\n`;
+                } else {
+                    html += `${tabs}</td>\n<td>${tabs}${pointNumber}. ${pointTitle}</td>\n`;
+                }
             }
         }
     });
 
     // Close the last subsection and section
     if (currentSubsection !== '') {
-        html += `    </td>\n  </tr>\n`;
+        html += `</td>\n</tr>\n`;
     }
     if (currentSection !== '') {
-        html += `  </tr>\n`;
+        html += `</tr>\n`;
     }
 
     // Close the HTML table
@@ -103,6 +129,7 @@ function generateHTML() {
     // Set the generated HTML to the output section
     outputHtml.value = html;
 }
+
 
 function copyToClipboard() {
     const outputHtml = document.getElementById('output-html');
