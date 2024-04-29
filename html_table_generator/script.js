@@ -25,10 +25,7 @@ function generateColumnsTableHTML() {
         const label = filteredLines[i];
         const value = filteredLines[i + 1] || ''; // Ensure value exists, default to empty string if not
 
-        html += `<tr class="data-row">\n`;
-        html += `<td class="cell cell-right text-emphasis">${label}</td>\n`;
-        html += `<td class="cell text-emphasis">${value}</td>\n`;
-        html += '</tr>\n';
+        html += `<tr class="data-row">\n<td class="cell cell-right text-emphasis">${label}</td>\n<td class="cell text-emphasis">${value}</td>\n</tr>\n`;
     }
 
     html += '</tbody>\n</table></body></html>';
@@ -49,7 +46,8 @@ function generateListTableHTML() {
     let currentSubsection = '';
 
     // Generate the HTML table structure
-    let html = `<!DOCTYPE html>
+    let html = `
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
