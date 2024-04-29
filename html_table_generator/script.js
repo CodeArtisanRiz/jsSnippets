@@ -14,7 +14,11 @@ function previewHTML() {
 
 function generateColumnsTableHTML() {
     const inputText = document.getElementById('input-text').value;
-    const lines = inputText.split('\n');
+    if(inputText === '') {
+        alert('Please enter some text!');
+        return;
+    } else {
+        const lines = inputText.split('\n');
     let html = '<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Document</title><style>.table{width:100%}.data-row:nth-child(odd){background-color:#9893f5;color:#fff}.data-row:nth-child(even){background-color:#7e7bb0;color:#fff}.cell{padding:10px;border-bottom:1px solid #ddd}.cell-right{border-right:1px solid #ddd}.text-emphasis{font-weight:700;font-style:italic}</style></head><body><table class="table">\n<tbody>\n';
 
     // Filter out empty lines or lines with only spaces
@@ -30,10 +34,16 @@ function generateColumnsTableHTML() {
 
     html += '</tbody>\n</table></body></html>';
     document.getElementById('output-html').innerHTML = html;
+    }
 }
 function generateListTableHTML() {
     const inputText = document.getElementById('input-text').value;
-    const outputHtml = document.getElementById('output-html');
+    if(inputText === '') {
+        alert('Please enter some text!');
+        return;
+    }
+    else {
+        const outputHtml = document.getElementById('output-html');
 
     // Split the input text into lines
     const lines = inputText.split('\n');
@@ -162,4 +172,5 @@ function generateListTableHTML() {
 
     // Set the generated HTML to the output section
     outputHtml.value = html;
+    }
 }
