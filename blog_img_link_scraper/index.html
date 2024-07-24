@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blog Image Links(s) Scraper</title>
+    <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+    <!-- <h1>Blog Image Link(s) Scraper</h1> -->
+    <header>
+        <h1>Blog Image Link(s) Scraper</h1>
+    </header>
+
+    <div class="container">
+        <div class="input-section">
+            <h2>Input URL(s)</h2>
+            <textarea id="blogUrls" placeholder="Enter Blog URL(s), one per line..."></textarea>
+            <button class="gen-btn" onclick="scrapeblogs()">Scrape</button>
+        </div>
+        <div class="output-section">
+            <h2>Output: JSON</h2>
+            <pre id="output"></pre>
+            <br>
+            <button id="downloadBtn" class="download-btn" style="display: none;" onclick="downloadJson()">Download JSON</button>
+        </div>
+    </div>
+    <!-- Loading Spinner -->
+    <div id="spinner" class="spinner"></div>
+
+    <script>
+        const proxyUrl = 'https://api.codetabs.com/v1/proxy/?quest=';
+
+        function getFileNameFromUrl(url) {
+            return url.substring(url.lastIndexOf('/') + 1);
+        }
+
+        async function getImagesFromblog(blogUrl) {
+            try {
+                const response = await fetch(proxyUrl + encodeURIComponent(blogUrl));
+                const html = await response.text();
+
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(html, 'text/html');
+
+                // Extract Blog title using entry-title[0]
+                const titleElement = doc.querySelectorAll('.entry-title')[0];
+                const title = titleElement ? titleElement.textContent : 'No Title';
+
+                // Find images within specific div
+                const images = [];
+                const imageNames = [];
+                const imageElements = doc.querySelectorAll('div.wp-block-image figure img');
+                imageElements.forEach(img => {
+                    const src = img.getAttribute('src');
+                    if (src) {
+                        images.push(src);
+                        imageNames.push(getFileNameFromUrl(src));
+                    }
+                });
+
+                return {
+                    blog_title: title,
+                    blog_link: blogUrl,
+                    images: images,
+                    images_name: imageNames
+                };
+            } catch (error) {
+                console.error(`Error scraping ${blogUrl}:`, error);
+                return {
+                    blog_title: "Error",
+                    blog_link: blogUrl,
+                    images: [],
+                    images_name: []
+                };
+            }
+        }
+
+        async function scrapeblogs() {
+            document.getElementById('spinner').style.display = 'block'; // Show spinner
+            const blogUrls = document.getElementById('blogUrls').value.split('\n').filter(url => url.trim() !== '');
+            const blogData = [];
+
+            for (const url of blogUrls) {
+                const data = await getImagesFromblog(url.trim());
+                blogData.push(data);
+            }
+
+            const jsonOutput = JSON.stringify(blogData, null, 4);
+            document.getElementById('output').textContent = jsonOutput;
+            document.getElementById('downloadBtn').style.display = 'block';
+            document.getElementById('spinner').style.display = 'none'; // Hide spinner
+        }
+
+        function downloadJson() {
+            const dataStr = document.getElementById('output').textContent;
+            const blob = new Blob([dataStr], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'blog_images.json';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+    </script>
+</body>
+</html>
