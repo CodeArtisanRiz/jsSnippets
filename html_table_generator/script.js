@@ -19,7 +19,8 @@ function generateColumnsTableHTML() {
         return;
     } else {
         const lines = inputText.split('\n');
-    let html = '<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Document</title><style>.table{width:100%}.data-row:nth-child(odd){background-color:#9893f5;color:#fff}.data-row:nth-child(even){background-color:#7e7bb0;color:#fff}.cell{padding:10px;border-bottom:1px solid #ddd}.cell-right{border-right:1px solid #ddd}.text-emphasis{font-weight:700;font-style:italic}</style></head><body><table class="table">\n<tbody>\n';
+    // let html = '<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Document</title><style>.table{width:100%}.data-row:nth-child(odd){background-color:#9893f5;color:#fff}.data-row:nth-child(even){background-color:#7e7bb0;color:#fff}.cell{padding:10px;border-bottom:1px solid #ddd}.cell-right{border-right:1px solid #ddd}.text-emphasis{font-weight:700;font-style:italic}</style></head><body><table class="table">\n<tbody>\n';
+    let html ='<table class="table">\n<tbody>\n';
 
     // Filter out empty lines or lines with only spaces
     const filteredLines = lines.filter(line => line.trim() !== '');
@@ -30,9 +31,11 @@ function generateColumnsTableHTML() {
         const value = filteredLines[i + 1] || ''; // Ensure value exists, default to empty string if not
 
         html += `<tr class="data-row">\n<td class="cell cell-right text-emphasis">${label}</td>\n<td class="cell text-emphasis">${value}</td>\n</tr>\n`;
+    
     }
 
-    html += '</tbody>\n</table></body></html>';
+    // html += '</tbody>\n</table></body></html>';
+    html += '</tbody>\n</table>';
     document.getElementById('output-html').innerHTML = html;
     }
 }
@@ -56,31 +59,32 @@ function generateListTableHTML() {
     let currentSubsection = '';
 
     // Generate the HTML table structure
-    let html = `
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>List Table</title>
-  <style>
-    table {
-      border-collapse: collapse;
-      width: 80%;
-      margin: 0 auto;
-    }
-    th, td {
-      text-align: left;
-      padding: 8px;
-    }
-    th {
-      background-color: #9893f5;
-    }
-  </style>
-</head>
-<body>
+//     let html = `
+// <!DOCTYPE html>
+// <html lang="en">
+// <head>
+//   <meta charset="UTF-8">
+//   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+//   <title>List Table</title>
+//   <style>
+//     table {
+//       border-collapse: collapse;
+//       width: 80%;
+//       margin: 0 auto;
+//     }
+//     th, td {
+//       text-align: left;
+//       padding: 8px;
+//     }
+//     th {
+//       background-color: #9893f5;
+//     }
+//   </style>
+// </head>
+// <body>
 
-<table>\n`;
+// <table>\n`;
+    let html = '<table>\n';
 
 
     // Iterate over each line of the input text
@@ -168,7 +172,8 @@ function generateListTableHTML() {
     }
 
     // Close the HTML table
-    html += `</table>\n</body>\n</html>`;
+    // html += `</table>\n</body>\n</html>`;
+    html += '</table>';
 
     // Set the generated HTML to the output section
     outputHtml.value = html;
